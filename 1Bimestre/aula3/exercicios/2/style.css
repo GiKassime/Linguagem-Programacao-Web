@@ -1,0 +1,46 @@
+/* CSS para ser vínculado na página da atividade */
+body{
+    background-color: rgb(238, 231, 222);
+    display: flex;
+    justify-content:center;
+    align-items: center;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 300px;
+}
+
+.dropText {
+    display: none;
+    position: absolute;
+    background-color: lightgray;
+    min-width: 120px;
+    
+}
+
+.dropText span {
+    padding: 12px 25px;
+    display: block;
+}
+
+.dropText span img {
+    margin-right: 10px;
+}
+
+.dropText span:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+.dropdown:hover .dropText {
+    display: block;
+}
+.dropbtn{
+    background-color: bisque;
+    padding: 10px 40px;
+    font-size: larger;
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.212);
+}
