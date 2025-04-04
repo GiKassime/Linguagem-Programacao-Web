@@ -23,7 +23,13 @@
                 [2,"Jorginho"],
                 [13,"Aldair"],
                 [15,"Márcio Santos"],
-                [8,"Dunga"]
+                [8,"Dunga"],
+                [6,"Branco"],
+                [5,"Mauro Silva"],
+                [17,"Mazinho"],
+                [9,"Zinho"],
+                [11,"Romário"],
+                [7,"Bebeto"]
             ];
             foreach ($jogadores as $key => $jogador) {                
                 $color = "green";
