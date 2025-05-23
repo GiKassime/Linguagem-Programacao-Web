@@ -11,10 +11,13 @@ if (isset($_POST['titulo'])) {
     $genero = $_POST['genero'];
     $paginas = $_POST['paginas'];
     $img = $_POST['img'];
+    $autor = $_POST['autor'];
     //Inserir os dados no bdd
-    $sql = "INSERT INTO livros (titulo, genero, qtd_paginas, link_img) VALUES (?,?,?,?);";
+    $sql = "INSERT INTO livros (titulo, genero, qtd_paginas, link_img,autor) VALUES (?,?,?,?,?);";
     $statement = $con->prepare($sql);
-    $statement->execute(array($titulo, $genero, $paginas, $img));
+    $statement->execute(array($titulo, $genero, $paginas, $img,$autor));
+    //redirecionar a mesma página a fim de limpar o buffer do navegador
+    header('Location: index.php');
 }
 ?>
 <!DOCTYPE html>
@@ -26,6 +29,7 @@ if (isset($_POST['titulo'])) {
     <title>Cadastro de Livros</title>
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
 
 <body class="bg-light">
@@ -50,16 +54,37 @@ if (isset($_POST['titulo'])) {
                 $statement->execute();
                 $matriz = $statement->fetchAll();
 
-                foreach ($matriz as $livro) {
+                foreach ($matriz as $chave => $livro) {
+                    $chave ++;
+                    switch ($livro['genero']) {
+                        case 'D':
+                            $genero = "Drama";
+                            break;
+                        case 'F':
+                            $genero = "Ficção";
+                            break;
+                        case 'R':
+                            $genero = "Romance";
+                            break;
+                        case 'O':
+                            $genero = "Outros";
+                            break;
+                        default:
+                            $genero = "N/A genero";
+                            break;
+                    }
                     echo "
                     <div class='col'>
                         <div class='card h-100 bg-light'>
 
                             <img src='{$livro['link_img']}' alt='Imagem do Livro' class='card-img-top' style='height: 300px; object-fit: cover;'>
                             <div class='card-body'>
-                                <h5 class='card-title'>{$livro['id']} - {$livro['titulo']}</h5>
-                                <p class='card-text'>{$livro['genero']}</p>
-                                <p class='card-text'>{$livro['qtd_paginas']} pg</p>
+                                <h5 class='card-title'>{$chave} - {$livro['titulo']}</h5>
+                                <p class='card-text'>". $livro['autor'] ."</p>
+                                <p class='card-text'>{$genero}</p>
+                                <p class='card-text'>{$livro['qtd_paginas']} pg</p>                            
+                                <a href='excluir.php?id={$livro['id']}' onclick='return ".'confirm("Confirma a exclusão?")'.";' class='btn btn-danger bi bi-trash-fill '>Excluir</a>
+
                             </div>
                         </div>
                     </div>";
@@ -76,10 +101,10 @@ if (isset($_POST['titulo'])) {
                 <h5 class="mb-0">Formulário de Cadastro</h5>
             </div>
             <div class="card-body">
-                <form action="index.php" method="POST">
+                <form action="index.php" method="POST" >
                     <div class="mb-3">
                         <label for="titulo" class="form-label">Título do Livro</label>
-                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Digite o título" required>
+                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Digite o título"  required>
                     </div>
 
                     <div class="mb-3">
@@ -91,6 +116,10 @@ if (isset($_POST['titulo'])) {
                             <option value="R">Romance</option>
                             <option value="O">Outros</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="autor" class="form-label">Autor</label>
+                        <input type="text" class="form-control"  name="autor" id="autor" placeholder="Digite o nome do autor do livro" required>
                     </div>
                     <div class="mb-3">
                         <label for="paginas" class="form-label">Quantidade de páginas do Livro</label>
