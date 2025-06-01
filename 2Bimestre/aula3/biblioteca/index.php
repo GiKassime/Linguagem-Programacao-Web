@@ -18,7 +18,7 @@ if (isset($_POST['titulo'])) {
 
     //Validar os dados 
     $erros = [];
-    if (!$titulo ) {
+    if (!str_replace(" ","", $titulo) ) {
         array_push($erros, "O campo título é obrigatório.");
     }else if( strlen($titulo) < 3 || strlen($titulo) > 50){
         array_push($erros, "O campo título deve ter no mínimo 3 caracteres e no máximo 50 caracteres.");
@@ -26,23 +26,23 @@ if (isset($_POST['titulo'])) {
         $sql = "SELECT * FROM livros WHERE titulo = ?;";
         $statement = $con->prepare($sql);
         $statement->execute(array($titulo));
-        if (is_empty($statement)) {
+        if ($statement->rowCount() > 0) {
+            //Se já existe um livro com o mesmo título
             array_push($erros, "O livro com o titulo {$titulo} já existe");
         }
-        
     }
-    if (!$genero) {
+    if (!str_replace(" ","", $genero)) {
         array_push($erros, "O campo gênero é obrigatório.");
     }
-    if (!$paginas) {
+    if (!str_replace(" ","", $paginas)) {
         array_push($erros, "O campo quantidade de páginas é obrigatório ");
     }else if ($paginas <= 0) {
         array_push($erros, "O campo quantidade de páginas deve ser maior que zero.");
     }
-    if (!$img) {
+    if (!str_replace(" ","", $img)) {
         array_push($erros, "O campo imagem é obrigatório.");
     }
-    if (!$autor) {
+    if (!str_replace(" ","", $autor)) {
         array_push($erros, "O campo autor é obrigatório.");
     }
    
@@ -144,30 +144,31 @@ if (isset($_POST['titulo'])) {
                 <form action="index.php" method="POST"  >
                     <div class="mb-3">
                         <label for="titulo" class="form-label">Título do Livro</label>
-                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Digite o título"  >
+                        <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Digite o título" value="<?=  isset($titulo) ? $titulo : ""?>" >
                     </div>
 
-                    <div class="mb-3">
-                        <label for="genero" class="form-label">Gênero</label>
-                        <select class="form-select" name="genero" id="genero" >
-                            <option value="" >Selecione um gênero</option>
-                            <option value="D">Drama</option>
-                            <option value="F">Ficção</option>
-                            <option value="R">Romance</option>
-                            <option value="O">Outros</option>
-                        </select>
-                    </div>
+                   <div class="mb-3">
+    <label for="genero" class="form-label">Gênero</label>
+    <select class="form-select" name="genero" id="genero">
+        <option value="">Selecione um gênero</option>
+        <option value="D" <?= (isset($_POST['genero']) && $_POST['genero'] == 'D') ? 'selected' : '' ?>>Drama</option>
+        <option value="F" <?= (isset($_POST['genero']) && $_POST['genero'] == 'F') ? 'selected' : '' ?>>Ficção</option>
+        <option value="R" <?= (isset($_POST['genero']) && $_POST['genero'] == 'R') ? 'selected' : '' ?>>Romance</option>
+        <option value="O" <?= (isset($_POST['genero']) && $_POST['genero'] == 'O') ? 'selected' : '' ?>>Outros</option>
+    </select>
+</div>
+
                     <div class="mb-3">
                         <label for="autor" class="form-label">Autor</label>
-                        <input type="text" class="form-control"  name="autor" id="autor" placeholder="Digite o nome do autor do livro" >
+                        <input type="text" class="form-control"  name="autor" id="autor" placeholder="Digite o nome do autor do livro" value="<?=  isset($autor) ? $autor : ""?>" >
                     </div>
                     <div class="mb-3">
                         <label for="paginas" class="form-label">Quantidade de páginas do Livro</label>
-                        <input type="number" class="form-control"  name="paginas" id="paginas" placeholder="Digite o título" >
+                        <input type="number" class="form-control"  name="paginas" id="paginas" placeholder="Digite o título" value="<?=  isset($paginas) ? $paginas : ""?>">
                     </div>
                     <div class="mb-3">
                         <label for="img" class="form-label">Anexe a Imagem do Livro</label>
-                        <input type="text" class="form-control" name="img" id="img" >
+                        <input type="text" class="form-control" name="img" id="img" value="<?=  isset($img) ? $img : ""?>">
                     </div>
                     <button type="submit" class="btn btn-success">Cadastrar Livro</button>
                 </form>
